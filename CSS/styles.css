@@ -1,0 +1,100 @@
+/* CSS Variables */
+:root {
+    --PrimaryBackground: #1A1A2E;
+    --SecondaryBackground: #16213E;
+    --AccentColor: #E94560;
+    --TextPrimary: #FFFFFF;
+    --TextSecondary: #A2A2A2;
+    /* Chart/Data Colors */
+    --CommitsColor: #4ECDC4;
+    --CodeTimeColor: #45B7D1;
+    --JSColor: #95E1D3;
+    --PythonColor: #F7D6BC;
+    --HTMLColor: #E9B0B0;
+    --CSSColor: #F0C987;
+    --BicepColor: #87c8f0;
+    --PowerShellColor: #f08787;
+}
+
+/* CSS RESET */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+html, body {
+  height: 100%;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: "Roboto", serif;
+  background-color: var(--PrimaryBackground);
+  color: var(--TextPrimary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+#root, #__next {
+  isolation: isolate;
+}
+
+/* Typography */
+.title-text {
+  font-family: "Press Start 2P", serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.text-preset-1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 150%;
+  letter-spacing: 1px;
+}
+
+.text-preset-2 {
+
+}
+
+.text-preset-3 {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 150%;
+  color: var(--TextSecondary)
+}
+
+/* Layout */
+.profile__section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.info-container{
+  text-align: center;
+}
