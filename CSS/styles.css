@@ -39,7 +39,6 @@ html, body {
   color: var(--TextPrimary);
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 img, picture, video, canvas, svg {
@@ -66,6 +65,7 @@ p, h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   margin-bottom: 1rem;
   text-align: center;
+  margin-bottom: 2.5rem;
 }
 
 .text-preset-1 {
@@ -87,6 +87,11 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 /* Layout */
+header {
+   margin-top: 1.5rem;
+}
+
+
 .profile__section {
   display: flex;
   flex-direction: column;
@@ -97,4 +102,12 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .info-container{
   text-align: center;
+}
+
+.profile-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
 }
