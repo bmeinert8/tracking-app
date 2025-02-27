@@ -93,6 +93,13 @@ p, h1, h2, h3, h4, h5, h6 {
   color: var(--TextSecondary)
 }
 
+.text-preset-4 {
+  font-size: 0.775rem;
+  font-weight: 400;
+  line-height: 150%;
+  color: black;
+}
+
 .key-text {
   font-size: 10px;
   font-weight: 400;
