@@ -6,7 +6,11 @@
     --TextPrimary: #FFFFFF;
     --TextSecondary: #A2A2A2;
     /* Chart/Data Colors */
-    --CommitsColor: #4ECDC4;
+    --CommitMost: #4ECDC4;
+    --CommitMore: #4ecdc5bc;
+    --CommitMedium: #4ccdc483;
+    --CommitLess: #4ecdc54a;
+    --CommitLeast: #4ecdc500;
     --CodeTimeColor: #45B7D1;
     --JSColor: #95E1D3;
     --PythonColor: #F7D6BC;
@@ -89,10 +93,18 @@ p, h1, h2, h3, h4, h5, h6 {
   color: var(--TextSecondary)
 }
 
+.key-text {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--TextSecondary)
+}
+
 /* Layout */
 header {
    margin-top: 1.5rem;
 }
+
+
 
 
 .profile__section {
@@ -128,9 +140,14 @@ header {
 .main-dashboard > section {
   background-color: var(--SecondaryBackground);
   width: 90%;
-  height: 160px;
+  height: 200px;
   border-radius: 10px;
   box-shadow: 0px 4px 4px rgba(52, 52, 52, 0.25);
+}
+
+.title-link {
+  color: var(--TextPrimary);
+  text-decoration: none;
 }
 
 .commit-section {
@@ -152,18 +169,37 @@ header {
 }
 
 .commit-cell {
-  width: 12px;
-  height: 12px;
-  background-color: var(--CommitsColor); /* Change this to the desired color */
+  width: 10px;
+  height: 10px;
+  background-color: var(--CommitMost); /* Change this to the desired color */
 }
 
-.commit-cell.empty {
-  background-color: rgba(128, 128, 128, 0.3); /* Slight transparent grey */
+.less{
+  background-color: var(--CommitLess);
+}
+
+.least{
+  background-color: var(--CommitLeast);
+  border: 1px solid gray;
+}
+
+.more{
+  background-color: var(--CommitMore);
+}
+
+.medium{
+  background-color: var(--CommitMedium);
 }
 
 .grid-container {
   width: 100%;
   overflow-x: auto; /* Enables horizontal scrolling */
+}
+
+.commit-key {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
 }
 
 

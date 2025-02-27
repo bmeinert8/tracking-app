@@ -7,7 +7,7 @@
   <meta name="description" content="Dev Tracker is a web application that allows users to track their progress on their coding projects.">
   <title>Dev Tracker</title>
   <link rel="stylesheet" href="./CSS/styles.css">
-  <link rel="stylesheet" href="./CSS/styles.css">
+  <link rel="stylesheet" href="./CSS/medias.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -27,14 +27,16 @@
   <main>
     <section class="main-dashboard">
       <section class="commit-section">
-        <h2 class="text-preset-2">Commits</h2>
+        <h2 class="text-preset-2">
+          <a href="#" class="title-link">Commits</a>
+        </h2>
         <div class="grid-container">
           <div class="commit-grid">
             <div class="commit-cell" title="Jan 1, 2025"></div>
-            <div class="commit-cell" title="Jan 2, 2025"></div>
-            <div class="commit-cell" title="Jan 3, 2025"></div>
-            <div class="commit-cell" title="Jan 4, 2025"></div>
-            <div class="commit-cell" title="Jan 5, 2025"></div>
+            <div class="commit-cell less" title="Jan 2, 2025"></div>
+            <div class="commit-cell least" title="Jan 3, 2025"></div>
+            <div class="commit-cell more" title="Jan 4, 2025"></div>
+            <div class="commit-cell medium" title="Jan 5, 2025"></div>
             <div class="commit-cell" title="Jan 6, 2025"></div>
             <div class="commit-cell" title="Jan 7, 2025"></div>
             <div class="commit-cell" title="Jan 8, 2025"></div>
@@ -397,6 +399,15 @@
             <div class="commit-cell"></div>
           </div>
         </div>
+        <section class="commit-key">
+          <p class="key-text">none</p>
+          <div class="commit-cell least"></div>
+          <div class="commit-cell less"></div>
+          <div class="commit-cell medium"></div>
+          <div class="commit-cell more"></div>
+          <div class="commit-cell most"></div>
+          <p class="key-text">most</p>
+        </section>
       </section>
       <section class="time-section">
 
