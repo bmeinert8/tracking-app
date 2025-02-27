@@ -99,6 +99,11 @@ p, h1, h2, h3, h4, h5, h6 {
   color: var(--TextSecondary)
 }
 
+.time-text {
+  font-size: 5rem;
+  line-height: 150%;
+  letter-spacing: 1px;
+}
 /* Layout */
 header {
    margin-top: 1.5rem;
@@ -149,6 +154,8 @@ header {
   color: var(--TextPrimary);
   text-decoration: none;
 }
+
+/* Commit Section */
 
 .commit-section {
   overflow-x: auto;
@@ -202,5 +209,22 @@ header {
   align-items: center;
 }
 
+/* Code Time Section */
+.time-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px; /* Adds 10px padding to the left and right */
+}
 
+.button-container {
+  display: flex;
+  gap: 1rem;
+}
 
+.icon {
+  width: 25px;
+  height: 25px;
+}
