@@ -97,7 +97,7 @@ p, h1, h2, h3, h4, h5, h6 {
   font-size: 0.775rem;
   font-weight: 400;
   line-height: 150%;
-  color: var(--AccentColor);
+  color: var(--TextSecondary);
 }
 
 .key-text {
@@ -139,6 +139,23 @@ header {
   border: 3px solid var(--AccentColor);
 }
 
+.links-container {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.icon-container {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background-color: var(--TextPrimary);
+}
+
+
 .main-dashboard {
   display: flex;
   flex-direction: column;
@@ -155,6 +172,8 @@ header {
   height: 200px;
   border-radius: 10px;
   box-shadow: 0px 4px 4px rgba(52, 52, 52, 0.25);
+  padding: 20px;
+  margin: 15px 0
 }
 
 .title-link {
@@ -171,8 +190,7 @@ header {
   gap: 1rem;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  margin: 15px 0
+
 }
 
 .commit-grid {
