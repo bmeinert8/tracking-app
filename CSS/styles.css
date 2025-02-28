@@ -9,8 +9,7 @@
     --CommitMost: #a6f0e7;
     --CommitMore: #79cdc6;
     --CommitMedium: #66D3CC;
-    --CommitLess: #55beb7;
-    --CommitLeast: #3d9e97;
+    --CommitLess: #3d9e97;
     --CodeTimeColor: #3a9bb0;
     --JSColor: #95E1D3;
     --PythonColor: #F7D6BC;
@@ -211,7 +210,8 @@ header {
 }
 
 .least{
-  background-color: var(--CommitLeast);
+  background-color: var(--SecondaryBackground);
+  opacity:;
   border: 1px solid gray;
 }
 
