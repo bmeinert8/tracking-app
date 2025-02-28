@@ -211,7 +211,6 @@ header {
 
 .least{
   background-color: var(--SecondaryBackground);
-  opacity:;
   border: 1px solid gray;
 }
 
@@ -320,7 +319,24 @@ header {
 footer {
   text-align: center;
   padding: 1rem;
-  font-size: 0.875rem;
+  margin-top: 1rem;
 }
 
 /* interactivity */
+.title-link:focus-visible {
+  outline: 2px solid var(--AccentColor);
+  outline-offset: 2px;
+}
+
+.buttons:focus-visible {
+  outline: 2px solid var(--AccentColor);
+  outline-offset: 2px;
+}
+
+.title-link:focus {
+  outline: none;
+}
+
+.buttons:focus {
+  outline: none;
+}
