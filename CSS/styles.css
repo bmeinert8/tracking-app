@@ -6,12 +6,12 @@
     --TextPrimary: #FFFFFF;
     --TextSecondary: #A2A2A2;
     /* Chart/Data Colors */
-    --CommitMost: #4ECDC4;
-    --CommitMore: #4ecdc5bc;
-    --CommitMedium: #4ccdc483;
-    --CommitLess: #4ecdc54a;
-    --CommitLeast: #4ecdc500;
-    --CodeTimeColor: #45B7D1;
+    --CommitMost: #a6f0e7;
+    --CommitMore: #79cdc6;
+    --CommitMedium: #66D3CC;
+    --CommitLess: #55beb7;
+    --CommitLeast: #3d9e97;
+    --CodeTimeColor: #3a9bb0;
     --JSColor: #95E1D3;
     --PythonColor: #F7D6BC;
     --HTMLColor: #E9B0B0;
@@ -27,7 +27,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border: 0;
   font-size: 100%;
   font: inherit;
   vertical-align: baseline;
@@ -112,7 +111,7 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 /* Layout */
 header {
-   margin-top: 1.5rem;
+   margin-top: 3.5rem;
 }
 
 
@@ -254,14 +253,14 @@ header {
   height: 25px;
 }
 
-.timer-buttons > button {
+.buttons {
   border: none;
   background-color: #b3b3b3;
   border-radius: 5px;
   padding: 5px;
 }
 
-.timer-buttons > button:hover {
+.buttons:hover {
   background-color: #a6a6a6;
   cursor: pointer;
 }
@@ -323,3 +322,5 @@ footer {
   padding: 1rem;
   font-size: 0.875rem;
 }
+
+/* interactivity */
