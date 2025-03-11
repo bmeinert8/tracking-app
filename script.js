@@ -51,7 +51,7 @@ fetch('https://api.github.com/users/bmeinert8/events', {
   //Create and empty object to store commit counts by date.
   const today = new Date();
   //Get the current date as a refrence point.
-  const oneYearAgo = new Date(today.getFullYear()-1, today.getMoneth(), today.getDate());
+  const oneYearAgo = new Date(today.getFullYear()-1, today.getMonth(), today.getDate());
   //Calculate the date one year ago from today to filter commits.
 
   data.forEach(event => {
