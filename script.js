@@ -9,6 +9,7 @@ fetch('https://api.github.com/users/bmeinert8/events', {
   headers: {
     'Authorization': 'token #'
     // Authorization header with Personal Access Token (PAT) for aithenticated access
+    // Temporarly hard-coded for local testing. DO NOT COMMIT OR SHARE TOKENS.
     // REMOVE
   }
 })
@@ -45,6 +46,35 @@ fetch('https://api.github.com/users/bmeinert8/events', {
     // log a message if no PushEvents were found.
   }
 
+  //Step 3: Process commit counts by date
+  const commitCounts ={};
+  //Create and empty object to store commit counts by date.
+  const today = new Date();
+  //Get the current date as a refrence point.
+  const oneYearAgo = new Date(today.getFullYear()-1, today.getMoneth(), today.getDate());
+  //Calculate the date one year ago from today to filter commits.
+
+  data.forEach(event => {
+    //loop through each event in the API respnse.
+    if (event.type === 'PushEvent') {
+    //Only process PushEvents, which is where commits are contained.
+      const eventDate = new Date(event.created_at);
+      //Convert the event's created_at timestamp to a Date object.
+      if (eventDate >= oneYearAgo) {
+        //Check if the event is within the last year.
+        const dateStr = eventDate.toISOString().split('T')[0];
+        //Extract the date string from the timestamp.
+        event.payload.commits.forEach(commit => {
+          //Loop through each commit in the event.
+          commitCounts[dateStr] = (commitCounts[dateStr] || 0) + 1;
+          //Increment the commit count for that date; initialize to 0 if not yet set
+        });
+      }
+    }
+  });
+  console.log('Commit Counts:', commitCounts);
+  //Log the commit counts object for inspection.
+
   // Populate the commit grid with 365 cells.
   const commitGrid = document.querySelector('.js-commit-grid');
   //select the commit grid element by its class name.
@@ -53,7 +83,13 @@ fetch('https://api.github.com/users/bmeinert8/events', {
     const cell = document.createElement('div');
     // Create a new div element for each cell.
     cell.classList.add('commit-cell');
-    // Add the 'commit-cell' class to each cell for stylization..
+    // Add the 'commit-cell' class to each cell for stylization.
+    const cellDate = new Date(today);
+    // Create a new Date object for the current cell date.
+    cellDate.setDate(today.getDate()- i);
+    // Subtract the loop index from the current day (e.g. i=0 is today, i=1 is yesterday).
+    cell.dataset.date = cellDate.toISOString().split('T')[0];
+    //Add a data-date attribute to each cell
     commitGrid.appendChild(cell);
     // Append each cell to the commit grid.
   }
