@@ -228,6 +228,14 @@ header {
   white-space: nowrap;
 }
 
+.commit-total {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--TextSecondary);
+  text-align: center;
+}
+
 .grid-container {
   width: 100%;
   overflow-x: auto; /* Enables horizontal scrolling */

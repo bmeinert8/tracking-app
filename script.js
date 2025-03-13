@@ -28,6 +28,14 @@ fetch('http://localhost:3000/api/commits')
     });
     console.log('Commit Counts Across Repos:', commitCounts);
 
+    // Calculate total commits in the past 365 days
+    const totalCommits = Object.values(commitCounts).reduce((sum, count) => sum + count, 0);
+    console.log('Total Commits in Past 365 Days:', totalCommits);
+
+    // Display total commits in the DOM
+    const totalCommitsElement = document.querySelector('.js-commit-total');
+    totalCommitsElement.innerHTML = `<p>Total Commits in Past 365 Days: ${totalCommits}</p>`;
+
     const commitGrid = document.querySelector('.js-commit-grid');
     for (let i = 0; i < 365; i++) {
       const cell = document.createElement('div');
