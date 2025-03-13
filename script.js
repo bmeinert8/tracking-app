@@ -14,12 +14,14 @@ fetch('http://localhost:3000/api/commits')
     const oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
     const seenCommits = new Set();
 
+    // Process commits in local timezone
     allCommits.forEach(commit => {
       if (!seenCommits.has(commit.sha)) {
         seenCommits.add(commit.sha);
-        const commitDate = new Date(commit.commit.author.date);
+        const commitDate = new Date(commit.commit.author.date); // UTC date from GitHub
         if (commitDate >= oneYearAgo && commitDate <= today) {
-          const dateStr = commitDate.toISOString().split('T')[0];
+          // Convert UTC date to local timezone (EDT) and extract YYYY-MM-DD
+          const dateStr = commitDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' }); // 'en-CA' gives YYYY-MM-DD format
           commitCounts[dateStr] = (commitCounts[dateStr] || 0) + 1;
         }
       }
@@ -32,7 +34,8 @@ fetch('http://localhost:3000/api/commits')
       cell.classList.add('commit-cell');
       const cellDate = new Date(today);
       cellDate.setDate(today.getDate() - i);
-      cell.dataset.date = cellDate.toISOString().split('T')[0];
+      // Set cell date in local timezone (EDT) to match commitCounts
+      cell.dataset.date = cellDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
       commitGrid.appendChild(cell);
     }
 
