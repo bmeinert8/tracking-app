@@ -1,9 +1,8 @@
-/// Step 2 & 3: Fetch commits from all repositories and process them
-// First, get the list of all repositories for the user
 // Step 2 & 3: Fetch commits from all repositories and process them
 fetch('https://api.github.com/users/bmeinert8/repos?per_page=100', {
   headers: {
-    'Authorization': 'token #'
+    'Authorization': 'token #',
+    'Accept-Encoding': 'identity' // Request uncompressed response to avoid gzip issues
   }
 })
 .then(response => {
@@ -21,7 +20,8 @@ fetch('https://api.github.com/users/bmeinert8/repos?per_page=100', {
   const repoPromises = repos.map(repo =>
     fetch(`https://api.github.com/repos/bmeinert8/${repo.name}/branches`, {
       headers: {
-        'Authorization': 'token #'
+        'Authorization': 'token #',
+        'Accept-Encoding': 'identity'
       }
     })
     .then(response => {
@@ -30,6 +30,10 @@ fetch('https://api.github.com/users/bmeinert8/repos?per_page=100', {
         return [];
       }
       return response.json();
+    })
+    .catch(error => {
+      console.error(`Error fetching branches for ${repo.name}:`, error);
+      return []; // Continue even if this fetch fails
     })
     .then(branches => {
       console.log(`Branches for ${repo.name}:`, branches.map(branch => branch.name));
@@ -40,7 +44,8 @@ fetch('https://api.github.com/users/bmeinert8/repos?per_page=100', {
       const branchPromises = branches.map(branch =>
         fetch(`https://api.github.com/repos/bmeinert8/${repo.name}/commits?sha=${branch.name}&since=2024-03-12&per_page=100`, {
           headers: {
-            'Authorization': 'token #'
+            'Authorization': 'token #',
+            'Accept-Encoding': 'identity'
           }
         })
         .then(response => {
@@ -57,6 +62,10 @@ fetch('https://api.github.com/users/bmeinert8/repos?per_page=100', {
             console.warn(`No commits found for ${repo.name}/${branch.name}`);
           }
           return commits;
+        })
+        .catch(error => {
+          console.error(`Error fetching commits for ${repo.name}/${branch.name}:`, error);
+          return []; // Continue even if this fetch fails
         })
       );
 
@@ -100,6 +109,7 @@ fetch('https://api.github.com/users/bmeinert8/repos?per_page=100', {
     commitGrid.appendChild(cell);
   }
 
+  // Step 4: Color the grid cells based on commit counts
   const thresholds = { least: 0, less: 1, medium: 3, more: 6, most: 9 };
   const cells = commitGrid.getElementsByClassName('commit-cell');
   for (let cell of cells) {
@@ -111,6 +121,31 @@ fetch('https://api.github.com/users/bmeinert8/repos?per_page=100', {
     else if (commitCount >= thresholds.medium) classToAdd = 'medium';
     else if (commitCount >= thresholds.less) classToAdd = 'less';
     cell.classList.add(classToAdd);
+
+    // Add hover event listener
+    cell.addEventListener('mouseover', () => {
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip';
+      tooltip.textContent = `${date} - ${commitCount} commit${commitCount !== 1 ? 's' : ''}`;
+      document.body.appendChild(tooltip);
+
+      // Position the tooltip near the cell
+      const rect = cell.getBoundingClientRect();
+      tooltip.style.position = 'absolute';
+      tooltip.style.left = `${rect.left + window.scrollX + 10}px`;
+      tooltip.style.top = `${rect.top + window.scrollY - 30}px`;
+      tooltip.style.backgroundColor = '#333';
+      tooltip.style.color = '#fff';
+      tooltip.style.padding = '5px 10px';
+      tooltip.style.borderRadius = '3px';
+      tooltip.style.fontSize = '12px';
+      tooltip.style.pointerEvents = 'none'; // Prevent tooltip from interfering with hover
+    });
+
+    cell.addEventListener('mouseout', () => {
+      const tooltip = document.querySelector('.tooltip');
+      if (tooltip) tooltip.remove();
+    });
   }
 })
 .catch(error => console.error('Error fetching commits:', error));
