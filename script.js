@@ -34,7 +34,7 @@ fetch('http://localhost:3000/api/commits')
 
     // Display total commits in the DOM
     const totalCommitsElement = document.querySelector('.js-commit-total');
-    totalCommitsElement.innerHTML = `<p>Total Commits in Past 365 Days: ${totalCommits}</p>`;
+    totalCommitsElement.innerHTML = `<p>Total Commits in Past 365 Days: ${totalCommits.toLocaleString()}</p>`;
 
     const commitGrid = document.querySelector('.js-commit-grid');
     for (let i = 0; i < 365; i++) {
