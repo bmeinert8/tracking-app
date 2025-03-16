@@ -69,15 +69,9 @@ fetch('http://localhost:3000/api/commits')
 
         // Position the tooltip near the cell
         const rect = cell.getBoundingClientRect();
-        tooltip.style.position = 'absolute';
         tooltip.style.left = `${rect.left + window.scrollX + 10}px`;
         tooltip.style.top = `${rect.top + window.scrollY - 30}px`;
-        tooltip.style.backgroundColor = '#333';
-        tooltip.style.color = '#fff';
-        tooltip.style.padding = '5px 10px';
-        tooltip.style.borderRadius = '3px';
-        tooltip.style.fontSize = '12px';
-        tooltip.style.pointerEvents = 'none'; // Prevent tooltip from interfering with hover
+        
       });
 
       cell.addEventListener('mouseout', () => {

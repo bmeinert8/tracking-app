@@ -2,6 +2,7 @@
 :root {
     --PrimaryBackground: #1A1A2E;
     --SecondaryBackground: #16213E;
+    --TooltipBackground: #333333;
     --AccentColor: #E94560;
     --TextPrimary: #FFFFFF;
     --TextSecondary: #A2A2A2;
@@ -226,6 +227,12 @@ header {
   position: absolute;
   z-index: 1000;
   white-space: nowrap;
+  background-color: var(--TooltipBackground);
+  color: var(--TextPrimary);
+  padding: 5px 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  pointer-events: none; /* Prevent tooltip from interfering with hover */
 }
 
 .commit-total {
