@@ -233,6 +233,7 @@ header {
   border-radius: 3px;
   font-size: 12px;
   pointer-events: none; /* Prevent tooltip from interfering with hover */
+  border: 1px solid var(--AccentColor);
 }
 
 .commit-total {
