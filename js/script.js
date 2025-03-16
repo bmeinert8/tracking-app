@@ -1,3 +1,3 @@
-import { initializeCommits } from './commit.js';
+import { initializeCommits } from './commits.js';
 
 initializeCommits();
