@@ -25,5 +25,25 @@ export function initializeCodeTime() {
     timeDisplay.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   }
 
+  // Function to start the timer
+  function startTimer() {
+    if (!intervalId) {
+      intervalId = setInterval(() => {
+        seconds++;
+        if (seconds === 60) {
+          seconds = 0;
+          minutes++;
+        }
+        if (minutes === 60) {
+          minutes = 0;
+          hours++
+        }
+        updateDisplay();
+      }, 1000);
+    }
+  }
+
   updateDisplay();
+
+  startButton.addEventListener('click', startTimer);
 }
