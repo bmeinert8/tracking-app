@@ -52,7 +52,36 @@ function buildCommitGrid(today, commitCounts) {
     commitGrid.appendChild(cell);
   }
 
-  const thresholds = { least: 0, less: 1, medium: 3, more: 6, most: 9 };
+  // calculate dynamic threshold
+  const commitCountsArray = []
+  for (let i = 0; i < 365; i ++) {
+    const cellDate = new Date(today);
+    cellDate.setDate(today.getDate() - i);
+    const dateStr = cellDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+    commitCountsArray.push(commitCounts[dateStr] || 0);
+  }
+
+  // Sort array to find percentiles
+  commitCountsArray.sort((a, b) => a - b);
+  const maxCommits = commitCountsArray[commitCountsArray.length - 1];
+
+  // Define percentiles (20th, 40th, 60th, 80th)
+  const thresholds = {
+    least: 0,
+    less: commitCountsArray[Math.floor(0.2 * 365)] || 1, // 20th percentile
+    medium: commitCountsArray[Math.floor(0.4 * 365)] || 3, // 40th percentile
+    more: commitCountsArray[Math.floor(0.6 * 365)] || 6, // 60th percentile
+    most: commitCountsArray[Math.floor(0.8 * 365)] || 9 // 80th percentile 
+  };
+
+  // Ensure thresholds are increasing and reasonable
+  if (thresholds.less < 1) thresholds.less = 1;
+  if (thresholds.medium <= thresholds.less) thresholds.medium = thresholds.less + 1;
+  if (thresholds.more <= thresholds.medium) thresholds.more = thresholds.medium + 1;
+  if (thresholds.most <= thresholds.more) thresholds.most = thresholds.more + 1;
+
+  console.log('Dynamic Thresholds:', thresholds);
+
   const cells = commitGrid.getElementsByClassName('commit-cell');
   for (let cell of cells) {
     const date = cell.dataset.date;
