@@ -51,8 +51,18 @@ export function initializeCodeTime() {
     }
   }
 
+  // Function to reset the code timer
+  function resetTimer() {
+    stopTimer();
+    hours = 0;
+    minutes = 0;
+    seconds = 0;
+    updateDisplay();
+  }
+
   updateDisplay();
 
   startButton.addEventListener('click', startTimer);
   stopButton.addEventListener('click', stopTimer);
+  resetButton.addEventListener('click', resetTimer);
 }
