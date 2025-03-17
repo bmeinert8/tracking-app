@@ -43,7 +43,16 @@ export function initializeCodeTime() {
     }
   }
 
+  // Function to stop the timer
+  function stopTimer() {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+  }
+
   updateDisplay();
 
   startButton.addEventListener('click', startTimer);
+  stopButton.addEventListener('click', stopTimer);
 }
