@@ -13,6 +13,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, '.')));
 app.use('/CSS', express.static(path.join(__dirname, 'CSS')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/js', express.static(path.join(__dirname, 'js')));
 
 // Serve the index.html
 app.get('/', (req, res) => {
