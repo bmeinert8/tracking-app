@@ -15,14 +15,29 @@ export function initializeCodeTime() {
     return;
   }
 
-  let hours = 0;
-  let minutes = 0;
-  let seconds = 0;
+  // Load saved state from localStorage
+  const savedState = JSON.parse(localStorage.getItem('codeTimeState') || '{}');
+  let hours = savedState.hours || 0;
+  let minutes = savedState.minutes || 0;
+  let seconds = savedState.seconds || 0;
   let intervalId = null;
+  let isRunning = savedState.isRunning || false;
 
   // Function to update the display
   function updateDisplay() {
     timeDisplay.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    saveState(); // Save state on every update.
+  }
+
+  // Function to save State
+  function saveState() {
+    const state = {
+      hours,
+      minutes,
+      seconds,
+      isRunning: !!intervalId // Convert intervalId to boolean (true if running)
+    };
+    localStorage.setItem('codeTimeState', JSON.stringify(state));
   }
 
   // Function to start the timer
@@ -48,6 +63,8 @@ export function initializeCodeTime() {
     if (intervalId) {
       clearInterval(intervalId);
       intervalId = null;
+      isRunning = false;
+      saveState();
     }
   }
 
@@ -60,7 +77,14 @@ export function initializeCodeTime() {
     updateDisplay();
   }
 
+  // Resume timer if it was running
+  if (isRunning && !intervalId) {
+    startTimer();
+  }
+
   updateDisplay();
+
+  console.log('Loaded State:', savedState);
 
   startButton.addEventListener('click', startTimer);
   stopButton.addEventListener('click', stopTimer);
