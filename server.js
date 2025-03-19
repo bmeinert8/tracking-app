@@ -2,13 +2,16 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-const fetch = require('node-fetch'); // This should now work with node-fetch@2
+const fetch = require('node-fetch');
 const fs = require('fs').promises;
 
-const app = express(); // create express app
+const app = express();
 
 // Enable CORS to allow requests from your frontend (e.g., Live Server on port 5500)
 app.use(cors());
+
+// Parse JSON request bodies
+app.use(express.json());
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '.')));
@@ -27,7 +30,7 @@ app.get('/api/commits', async (req, res) => {
     const reposResponse = await fetch('https://api.github.com/users/bmeinert8/repos?per_page=100', {
       headers: {
         'Authorization': `token ${process.env.GITHUB_TOKEN}`,
-        'Accept-Encoding': 'identity' // Avoid gzip decoding issues
+        'Accept-Encoding': 'identity'
       }
     });
 
@@ -93,10 +96,11 @@ app.get('/api/commits', async (req, res) => {
   }
 });
 
-app.get('/api/saveLog', async (req, res) => {
-  try{
+// Endpoint to save a log (changed to POST)
+app.post('/api/saveLog', async (req, res) => {
+  try {
     const userId = 'bmeinert8'; // Hardcoded for now; replace with auth later
-    const { timestamp, hours, minutes, seconds } = req.query; // Extract from query params
+    const { timestamp, hours, minutes, seconds } = req.body; // Extract from request body
     const filePath = path.join(__dirname, 'data', 'codeTimeLogs.json');
 
     // Read existing logs
@@ -121,18 +125,18 @@ app.get('/api/saveLog', async (req, res) => {
       seconds: secondsNum
     });
 
-    // Write Back to file
-    await fs.mkdir(path.join(__dirname, 'data'),{ recursive: true });
+    // Write back to file
+    await fs.mkdir(path.join(__dirname, 'data'), { recursive: true });
     await fs.writeFile(filePath, JSON.stringify(logsData, null, 2), 'utf8');
 
-    res.json({ success: true, log: logsData.logs[logsData.logs.length -1] });
-  } catch (error){
+    res.status(201).json({ success: true, log: logsData.logs[logsData.logs.length - 1] });
+  } catch (error) {
     console.error('Server: Error saving log:', error);
-    res.status(500).json({error: 'Failed to save log' });
+    res.status(500).json({ error: 'Failed to save log' });
   }
 });
 
-// New endpoint to fetch logs
+// Endpoint to fetch logs
 app.get('/api/getLogs', async (req, res) => {
   try {
     const userId = 'bmeinert8';
@@ -142,16 +146,15 @@ app.get('/api/getLogs', async (req, res) => {
     try {
       const fileContent = await fs.readFile(filePath, 'utf8');
       logsData = JSON.parse(fileContent);
-    } catch (error){
+    } catch (error) {
       if (error.code !== 'ENOENT') throw error;
     }
 
     res.json(logsData.logs);
-  }catch (error) {
+  } catch (error) {
     console.error('Server: Error fetching logs:', error);
     res.status(500).json({ error: 'Failed to fetch logs' });
   }
 });
 
 app.listen(3000, () => console.log('Server is running on port 3000'));
-
