@@ -132,5 +132,26 @@ app.get('/api/saveLog', async (req, res) => {
   }
 });
 
+// New endpoint to fetch logs
+app.get('/api/getLogs', async (req, res) => {
+  try {
+    const userId = 'bmeinert8';
+    const filePath = path.join(__dirname, 'data', 'codeTimeLogs.json');
+
+    let logsData = { userId, logs: [] };
+    try {
+      const fileContent = await fs.readFile(filePath, 'utf8');
+      logsData = JSON.parse(fileContent);
+    } catch (error){
+      if (error.code !== 'ENOENT') throw error;
+    }
+
+    res.json(logsData.logs);
+  }catch (error) {
+    console.error('Server: Error fetching logs:', error);
+    res.status(500).json({ error: 'Failed to fetch logs' });
+  }
+});
+
 app.listen(3000, () => console.log('Server is running on port 3000'));
 
