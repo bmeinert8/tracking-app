@@ -1,27 +1,77 @@
+/* Mobile (default): Stacked vertically */
+.main-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 20px;
+  background-color: #1a2a44;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+.commit-section,
+.time-section,
+.language-section {
+  width: 90%;
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #2a3b5a;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px rgba(52, 52, 52, 0.25);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Graph styling */
+.chart {
+  display: none;
+  max-width: 100%;
+  width: 100%;
+  margin: 10px 0;
+}
+
+/* Timer buttons */
+.timer-buttons {
+  display: flex;
+  gap: 1rem;
+  margin: 10px 0;
+}
+
+/* Language pie chart */
+.pie-chart {
+  position: relative;
+  width: 150px; /* Larger pie chart */
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
 /* Tablet and up (≥768px) */
 @media (min-width: 768px) {
   .main-dashboard {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: stretch;
+    gap: 20px;
   }
 
   .commit-section,
   .time-section,
   .language-section {
-    width: 45%; /* Two columns, adjust as needed */
-    max-width: 600px; /* Wider for graph */
-    min-height: 300px; /* Shorter height */
-  }
-
-  .time-section {
-    width: 600px; /* Fixed width for graph */
+    width: 45%;
+    max-width: 400px;
+    margin: 0;
+    height: auto;
+    min-height: 300px;
   }
 
   .chart {
     display: block;
-    max-width: 600px;
-    margin: 20px auto;
   }
 }
 
@@ -30,11 +80,8 @@
   .commit-section,
   .time-section,
   .language-section {
-    width: 30%; /* Three columns */
-    max-width: 600px;
-  }
-
-  .time-section {
-    width: 600px; /* Consistent graph size */
+    width: 32%;
+    max-width: 350px;
+    min-height: 350px;
   }
 }

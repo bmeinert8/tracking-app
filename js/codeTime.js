@@ -71,6 +71,59 @@ export function initializeCodeTime() {
     }
   }
 
+  // Function to render chart
+  async function renderChart() {
+    try {
+      const response = await fetch('http://localhost:3000/api/getLogs');
+      if (!response.ok) {
+        throw new Error(`Fetch failed with status: ${response.status}`);
+      }
+      const logs = await response.json();
+  
+      const dailyTotals = {};
+      logs.forEach(log => {
+        if (!log.timestamp) return;
+        const date = new Date(log.timestamp).toISOString().split('T')[0];
+        const totalSeconds = (log.hours * 3600) + (log.minutes * 60) + log.seconds;
+        dailyTotals[date] = (dailyTotals[date] || 0) + totalSeconds;
+      });
+  
+      const labels = Object.keys(dailyTotals);
+      const data = Object.values(dailyTotals).map(seconds => seconds / 3600);
+  
+      // Define ctx here
+      const ctx = document.getElementById('codeTimeChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Coding Time (Hours)',
+            data: data,
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: 'Hours' },
+              ticks: { stepSize: 0.02, callback: value => value.toFixed(3) }
+            },
+            x: { title: { display: true, text: 'Date' } }
+          },
+          plugins: {
+            legend: { labels: { color: '#ffffff' } },
+            title: { display: true, text: 'Daily Coding Time', color: '#ffffff' }
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error rendering chart:', error);
+    }
+  }
   // Function to start the timer
   function startTimer() {
     if (!intervalId) {
@@ -119,4 +172,6 @@ export function initializeCodeTime() {
   stopButton.addEventListener('click', stopTimer);
   resetButton.addEventListener('click', resetTimer);
   saveButton.addEventListener('click', saveLog);
+
+  renderChart(); // Initial render
 }

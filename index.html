@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
@@ -70,6 +71,7 @@
           <button class="buttons js-reset-button" aria-label="Reset timer"><img class="icon" src="images/restart.png" alt="restart timer button" aria-hidden="true"></button>
           <button class="buttons js-save-button" aria-label="Reset timer"><img class="icon" src="images/save.png" alt="restart timer button" aria-hidden="true"></button>
         </div>
+        <canvas id="codeTimeChart" class="chart" aria-label="Bar graph of daily coding time"></canvas>
       </section>
       <section class="language-section">
         <h2 class="text-preset-2">
