@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const fetch = require('node-fetch'); // This should now work with node-fetch@2
+const fs = require('fs').promises;
 
 const app = express(); // create express app
 
@@ -92,4 +93,44 @@ app.get('/api/commits', async (req, res) => {
   }
 });
 
+app.get('/api/saveLog', async (req, res) => {
+  try{
+    const userId = 'bmeinert8'; // Hardcoded for now; replace with auth later
+    const { timestamp, hours, minutes, seconds } = req.query; // Extract from query params
+    const filePath = path.join(__dirname, 'data', 'codeTimeLogs.json');
+
+    // Read existing logs
+    let logsData = { userId, logs: [] };
+    try {
+      const fileContent = await fs.readFile(filePath, 'utf8');
+      logsData = JSON.parse(fileContent);
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error; // Ignore if file doesn't exist yet.
+    }
+
+    // Validate and parse input
+    const hoursNum = parseInt(hours, 10) || 0;
+    const minutesNum = parseInt(minutes, 10) || 0;
+    const secondsNum = parseInt(seconds, 10) || 0;
+
+    // Append new log
+    logsData.logs.push({
+      timestamp: timestamp || new Date().toISOString(),
+      hours: hoursNum,
+      minutes: minutesNum,
+      seconds: secondsNum
+    });
+
+    // Write Back to file
+    await fs.mkdir(path.join(__dirname, 'data'),{ recursive: true });
+    await fs.writeFile(filePath, JSON.stringify(logsData, null, 2), 'utf8');
+
+    res.json({ success: true, log: logsData.logs[logsData.logs.length -1] });
+  } catch (error){
+    console.error('Server: Error saving log:', error);
+    res.status(500).json({error: 'Failed to save log' });
+  }
+});
+
 app.listen(3000, () => console.log('Server is running on port 3000'));
+

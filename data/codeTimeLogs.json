@@ -1,0 +1,23 @@
+{
+  "userId": "bmeinert8",
+  "logs": [
+    {
+      "timestamp": "2025-03-18T23:50:40.807Z",
+      "hours": 0,
+      "minutes": 1,
+      "seconds": 30
+    },
+    {
+      "timestamp": "2025-03-18T23:52:18.089Z",
+      "hours": 0,
+      "minutes": 2,
+      "seconds": 46
+    },
+    {
+      "timestamp": "2025-03-19T00:24:00.540Z",
+      "hours": 0,
+      "minutes": 1,
+      "seconds": 30
+    }
+  ]
+}

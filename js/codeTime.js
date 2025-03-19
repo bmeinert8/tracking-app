@@ -1,8 +1,10 @@
+console.log('Page loaded');
 export function initializeCodeTime() {
   const timeDisplay = document.querySelector('.js-time-text');
   const startButton = document.querySelector('.js-start-button');
   const stopButton = document.querySelector('.js-stop-button');
   const resetButton = document.querySelector('.js-reset-button');
+  const saveButton = document.querySelector('.js-save-button');
 
   //error message in console if an issue incurs with any of the elements in code time.
   if (!timeDisplay || !startButton || !stopButton || !resetButton) {
@@ -10,7 +12,8 @@ export function initializeCodeTime() {
       timeDisplay,
       startButton,
       stopButton,
-      resetButton
+      resetButton,
+      saveButton
     });
     return;
   }
@@ -22,6 +25,8 @@ export function initializeCodeTime() {
   let seconds = savedState.seconds || 0;
   let intervalId = null;
   let isRunning = savedState.isRunning || false;
+
+  console.log('Loaded State:',savedState);
 
   // Function to update the display
   function updateDisplay() {
@@ -38,6 +43,32 @@ export function initializeCodeTime() {
       isRunning: !!intervalId // Convert intervalId to boolean (true if running)
     };
     localStorage.setItem('codeTimeState', JSON.stringify(state));
+  }
+
+  async function saveLog() {
+    console.log('Save button clicked');
+    const timestamp = new Date().toISOString();
+    const params = new URLSearchParams({
+      timestamp,
+      hours: hours.toString(),
+      minutes: minutes.toString(),
+      seconds: seconds.toString()
+    });
+    try {
+      const response = await fetch(`http://localhost:3000/api/saveLog?${params}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const result = await response.json();
+      if (result.success) {
+        console.log('Saved Log:', result.log);
+        // await renderChart(); // Uncomment later when graph is added
+      } else {
+        console.error('Failed to save log:', result.error);
+      }
+    } catch (error) {
+      console.error('Error saving log:', error);
+    }
   }
 
   // Function to start the timer
@@ -84,9 +115,8 @@ export function initializeCodeTime() {
 
   updateDisplay();
 
-  console.log('Loaded State:', savedState);
-
   startButton.addEventListener('click', startTimer);
   stopButton.addEventListener('click', stopTimer);
   resetButton.addEventListener('click', resetTimer);
+  saveButton.addEventListener('click', saveLog);
 }
