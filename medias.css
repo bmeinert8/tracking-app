@@ -1,0 +1,40 @@
+/* Tablet and up (≥768px) */
+@media (min-width: 768px) {
+  .main-dashboard {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .commit-section,
+  .time-section,
+  .language-section {
+    width: 45%; /* Two columns, adjust as needed */
+    max-width: 600px; /* Wider for graph */
+    min-height: 300px; /* Shorter height */
+  }
+
+  .time-section {
+    width: 600px; /* Fixed width for graph */
+  }
+
+  .chart {
+    display: block;
+    max-width: 600px;
+    margin: 20px auto;
+  }
+}
+
+/* Desktop (≥1200px) */
+@media (min-width: 1200px) {
+  .commit-section,
+  .time-section,
+  .language-section {
+    width: 30%; /* Three columns */
+    max-width: 600px;
+  }
+
+  .time-section {
+    width: 600px; /* Consistent graph size */
+  }
+}
