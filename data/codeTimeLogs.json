@@ -2,6 +2,12 @@
   "userId": "bmeinert8",
   "logs": [
     {
+      "timestamp": "2025-03-17T23:50:40.807Z",
+      "hours": 1,
+      "minutes": 11,
+      "seconds": 35
+    },
+    {
       "timestamp": "2025-03-18T23:50:40.807Z",
       "hours": 0,
       "minutes": 1,
@@ -18,6 +24,18 @@
       "hours": 0,
       "minutes": 1,
       "seconds": 30
+    },
+    {
+      "timestamp": "2025-03-19T22:24:08.493Z",
+      "hours": 0,
+      "minutes": 21,
+      "seconds": 25
+    },
+    {
+      "timestamp": "2025-03-19T23:19:50.622Z",
+      "hours": 0,
+      "minutes": 40,
+      "seconds": 4
     }
   ]
 }

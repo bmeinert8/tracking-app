@@ -7,7 +7,6 @@
   <meta name="description" content="Dev Tracker is a web application that allows users to track their progress on their coding projects.">
   <title>Dev Tracker</title>
   <link rel="stylesheet" href="./styles.css">
-  <link rel="stylesheet" href="./medias.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -71,6 +70,12 @@
           <button class="buttons js-reset-button" aria-label="Reset timer"><img class="icon" src="images/restart.png" alt="restart timer button" aria-hidden="true"></button>
           <button class="buttons js-save-button" aria-label="Reset timer"><img class="icon" src="images/save.png" alt="restart timer button" aria-hidden="true"></button>
         </div>
+      </section>
+      <section class="graph-section">
+        <h2 class="text-preset-2">
+          <a href="#" class="title-link" aria-label="View in-depth code time graph">Code Time Graph</a>
+        </h2>
+        <div class="code-time-total js-code-time-total"></div> <!-- New container -->
         <canvas id="codeTimeChart" class="chart" aria-label="Bar graph of daily coding time"></canvas>
       </section>
       <section class="language-section">
