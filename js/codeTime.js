@@ -71,6 +71,123 @@ export function initializeCodeTime() {
     }
   }
 
+  // Function to render chart
+  async function renderChart() {
+    try {
+      const response = await fetch('http://localhost:3000/api/getLogs');
+      if (!response.ok) {
+        throw new Error(`Fetch failed with status: ${response.status}`);
+      }
+      const logs = await response.json();
+  
+      const dailyTotals = {};
+      const today = new Date();
+      const sevenDaysAgo = new Date(today);
+      sevenDaysAgo.setDate(today.getDate() - 6);
+  
+      logs.forEach(log => {
+        if (!log.timestamp) return;
+        const logDate = new Date(log.timestamp);
+        if (logDate < sevenDaysAgo) return;
+        const date = logDate.toISOString().split('T')[0];
+        const totalSeconds = (log.hours * 3600) + (log.minutes * 60) + log.seconds;
+        dailyTotals[date] = (dailyTotals[date] || 0) + totalSeconds;
+      });
+  
+      const labels = [];
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        labels.push(`${month}/${day}`);
+      }
+      labels.reverse();
+  
+      const fullLabels = Object.keys(dailyTotals);
+      const data = labels.map(label => {
+        const fullDate = `${today.getFullYear()}-${String(label.split('/')[0]).padStart(2, '0')}-${String(label.split('/')[1]).padStart(2, '0')}`;
+        return (dailyTotals[fullDate] || 0) / 3600;
+      });
+  
+      // Calculate the total code time
+      const totalHours = data.reduce((sum, hours) => sum + hours, 0);
+      const hours = Math.floor(totalHours);
+      const minutes = Math.floor((totalHours - hours) * 60);
+      const seconds = Math.floor(((totalHours - hours) * 60 - minutes) * 60);
+      const totalTimeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  
+      // Display the total
+      const totalElement = document.querySelector('.js-code-time-total');
+      if (totalElement) {
+        totalElement.textContent = `Code Time Past 7 Days: ${totalTimeString}`;
+      } else {
+        console.error('Total code time element not found');
+      }
+  
+      // Calculate the max value from the data
+      const maxHours = Math.max(...data, 0.001);
+      const roundedMax = Math.ceil(maxHours * 1000) / 1000;
+      const midPoint = roundedMax / 2;
+  
+      const ctx = document.getElementById('codeTimeChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Coding Time (Hours)',
+            data: data,
+            backgroundColor: 'rgba(58, 155, 176, 0.6)',
+            borderColor: 'rgba(58, 155, 176, 1)',
+            borderWidth: 1,
+            barThickness: 20,
+            maxBarThickness: 20
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: roundedMax,
+              title: {
+                display: false
+              },
+              ticks: {
+                callback: value => value.toFixed(3),
+                color: '#ffffff',
+                font: { size: 10 },
+                stepSize: midPoint,
+                values: [0, midPoint, roundedMax]
+              }
+            },
+            x: {
+              title: {
+                display: false
+              },
+              ticks: {
+                color: '#ffffff',
+                font: { size: 10 }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: '#ffffff',
+                font: { size: 12 }
+              }
+            },
+            title: {
+              display: false
+            }
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error rendering chart:', error);
+    }
+  }
   // Function to start the timer
   function startTimer() {
     if (!intervalId) {
@@ -119,4 +236,6 @@ export function initializeCodeTime() {
   stopButton.addEventListener('click', stopTimer);
   resetButton.addEventListener('click', resetTimer);
   saveButton.addEventListener('click', saveLog);
+
+  renderChart(); // Initial render
 }
