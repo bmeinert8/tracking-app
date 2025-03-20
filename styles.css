@@ -267,6 +267,7 @@ header {
 .timer-buttons {
   display: flex;
   gap: 1rem;
+  justify-content: center;
 }
 
 .icon {
@@ -284,6 +285,23 @@ header {
 .buttons:hover {
   background-color: #a6a6a6;
   cursor: pointer;
+}
+
+/* Save confirmation */
+.save-confirmation {
+  align-self: center;
+  margin-top: 10px;
+  font-size: 14px;
+  color: greenyellow;
+  text-align: center;
+}
+
+/* Save Error */
+.save-error {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #ff5555; /* A red color for errors */
+  text-align: center;
 }
 
 /* Graph Section */
