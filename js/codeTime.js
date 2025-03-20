@@ -55,14 +55,14 @@ export function initializeCodeTime() {
       return;
     }
     const [hours, minutes, seconds] = timeDisplay.textContent.split(':').map(Number);
-
+  
     const logData = {
       hours,
       minutes,
       seconds,
       timestamp: new Date().toISOString()
     };
-
+  
     try {
       const response = await fetch('http://localhost:3000/api/saveLog', {
         method: 'POST',
@@ -71,16 +71,16 @@ export function initializeCodeTime() {
         },
         body: JSON.stringify(logData)
       });
-
+  
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Failed to save log: ${response.status} - ${errorText}`);
       }
-
+  
       console.log('Log saved successfully');
       renderChart();
       resetTimer();
-
+  
       // Show confirmation message
       const confirmationElement = document.querySelector('.js-save-confirmation');
       if (confirmationElement) {
@@ -91,6 +91,14 @@ export function initializeCodeTime() {
       }
     } catch (error) {
       console.error('Error saving log:', error);
+      // Show error message
+      const errorElement = document.querySelector('.js-save-error');
+      if (errorElement) {
+        errorElement.style.display = 'block';
+        setTimeout(() => {
+          errorElement.style.display = 'none';
+        }, 3000); // Hide after 3 seconds
+      }
     }
   }
 
