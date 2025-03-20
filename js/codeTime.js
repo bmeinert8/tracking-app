@@ -56,11 +56,17 @@ export function initializeCodeTime() {
     }
     const [hours, minutes, seconds] = timeDisplay.textContent.split(':').map(Number);
   
+    // Generate timestamp in EST
+    const now = new Date();
+    const estOffset = -5 * 60; // EST is UTC-5 (in minutes)
+    const estTime = new Date(now.getTime() + estOffset * 60 * 1000);
+    const timestamp = estTime.toISOString().replace('Z', '-05:00'); // Indicate EST offset
+  
     const logData = {
       hours,
       minutes,
       seconds,
-      timestamp: new Date().toISOString()
+      timestamp
     };
   
     try {
@@ -77,8 +83,10 @@ export function initializeCodeTime() {
         throw new Error(`Failed to save log: ${response.status} - ${errorText}`);
       }
   
-      console.log('Log saved successfully');
-      renderChart();
+      const result = await response.json();
+      console.log('Log saved successfully:', result);
+  
+      // Reset the timer and show the confirmation message
       resetTimer();
   
       // Show confirmation message
@@ -89,6 +97,12 @@ export function initializeCodeTime() {
           confirmationElement.style.display = 'none';
         }, 2000); // Hide after 2 seconds
       }
+  
+      // Wait a brief moment to ensure the server has updated the logs file
+      await new Promise(resolve => setTimeout(resolve, 100)); // 100ms delay
+  
+      // Now render the chart with the updated data
+      await renderChart();
     } catch (error) {
       console.error('Error saving log:', error);
       // Show error message
@@ -110,37 +124,45 @@ export function initializeCodeTime() {
         throw new Error(`Fetch failed with status: ${response.status}`);
       }
       const logs = await response.json();
-
+      console.log('Fetched logs:', logs);
+  
       const dailyTotals = {};
       const today = new Date();
-      const sevenDaysAgo = new Date(today);
-      sevenDaysAgo.setDate(today.getDate() - 6);
-
+      // Adjust today to EST
+      const estOffset = -5 * 60; // EST is UTC-5
+      const todayEST = new Date(today.getTime() + estOffset * 60 * 1000);
+      const sevenDaysAgo = new Date(todayEST);
+      sevenDaysAgo.setDate(todayEST.getDate() - 6);
+  
       logs.forEach(log => {
         if (!log.timestamp) return;
+        // Parse the timestamp and convert to EST
         const logDate = new Date(log.timestamp);
-        if (logDate < sevenDaysAgo) return;
-        const date = logDate.toISOString().split('T')[0];
+        const logDateEST = new Date(logDate.getTime() + estOffset * 60 * 1000);
+        if (logDateEST < sevenDaysAgo) return;
+        const date = logDateEST.toISOString().split('T')[0];
         const totalSeconds = (log.hours * 3600) + (log.minutes * 60) + log.seconds;
         dailyTotals[date] = (dailyTotals[date] || 0) + totalSeconds;
       });
-
+      console.log('Daily totals:', dailyTotals);
+  
       const labels = [];
       for (let i = 0; i < 7; i++) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
+        const date = new Date(todayEST);
+        date.setDate(todayEST.getDate() - i);
         const month = date.getMonth() + 1;
         const day = date.getDate();
         labels.push(`${month}/${day}`);
       }
       labels.reverse();
-
+  
       const fullLabels = Object.keys(dailyTotals);
       const data = labels.map(label => {
-        const fullDate = `${today.getFullYear()}-${String(label.split('/')[0]).padStart(2, '0')}-${String(label.split('/')[1]).padStart(2, '0')}`;
+        const fullDate = `${todayEST.getFullYear()}-${String(label.split('/')[0]).padStart(2, '0')}-${String(label.split('/')[1]).padStart(2, '0')}`;
         return (dailyTotals[fullDate] || 0) / 3600;
       });
-
+      console.log('Chart data (hours):', data);
+  
       // Calculate the total code time
       const totalHours = data.reduce((sum, hours) => sum + hours, 0);
       const totalSeconds = totalHours * 3600;
@@ -148,7 +170,8 @@ export function initializeCodeTime() {
       const minutes = Math.floor((totalSeconds % 3600) / 60);
       const seconds = Math.floor(totalSeconds % 60);
       const totalTimeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
+      console.log('Total time string:', totalTimeString);
+  
       // Display the total
       const totalElement = document.querySelector('.js-code-time-total');
       if (totalElement) {
@@ -156,20 +179,20 @@ export function initializeCodeTime() {
       } else {
         console.error('Total code time element not found');
       }
-
-      // Calculate the max value from the data
+  
+      // ... (rest of the chart rendering code remains unchanged)
       const maxHours = Math.max(...data, 0.001);
       const roundedMax = Math.ceil(maxHours * 1000) / 1000;
       const midPoint = roundedMax / 2;
-
+  
       const ctx = document.getElementById('codeTimeChart').getContext('2d');
-
+  
       // Destroy the existing chart instance if it exists
       if (chartInstance) {
         chartInstance.destroy();
         chartInstance = null;
       }
-
+  
       // Create a new chart instance
       chartInstance = new Chart(ctx, {
         type: 'bar',
