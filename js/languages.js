@@ -30,7 +30,12 @@ export function initializeLanguages() {
       });
       const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
 
-      const ctx = document.getElementById('languageChart').getContext('2d');
+      const canvas = document.getElementById('languageChart');
+      if (!canvas) {
+        console.error('Language chart canvas not found');
+        return;
+      }
+      const ctx = canvas.getContext('2d');
 
       // Destroy the existing chart instance if it exists
       if (chartInstance) {
@@ -53,14 +58,17 @@ export function initializeLanguages() {
         options: {
           plugins: {
             legend: {
-              display: false // We'll create a custom legend
+              display: false // Custom legend
             }
           }
         }
       });
 
-      // Render the custom legend
+      // Render the legend into the modal
       renderLegend(languages, backgroundColors);
+
+      // Set up the modal toggle functionality
+      setupModalToggle();
     } catch (error) {
       console.error('Error rendering language chart:', error);
     }
@@ -77,7 +85,7 @@ export function initializeLanguages() {
     // Clear existing legend
     legendContainer.innerHTML = '';
 
-    //create legend items
+    // Create legend items
     languages.forEach((item, index) => {
       const legendItem = document.createElement('div');
       legendItem.classList.add('legend-item');
@@ -89,6 +97,44 @@ export function initializeLanguages() {
     });
   }
 
-  // Inital render
+  // Function to set up the modal toggle
+  function setupModalToggle() {
+    const toggleButton = document.querySelector('.js-language-key-toggle');
+    const modal = document.querySelector('.js-language-key-modal');
+    const closeButton = document.querySelector('.js-language-key-close');
+
+    if (!toggleButton || !modal || !closeButton) {
+      console.error('Modal elements not found');
+      return;
+    }
+
+    // Open modal
+    toggleButton.addEventListener('click', () => {
+      modal.style.display = 'block';
+      toggleButton.setAttribute('aria-expanded', 'true');
+      closeButton.focus(); // Focus on close button for accessibility
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    });
+
+    // Close modal
+    closeButton.addEventListener('click', () => {
+      modal.style.display = 'none';
+      toggleButton.setAttribute('aria-expanded', 'false');
+      toggleButton.focus(); // Return focus to toggle button
+      document.body.style.overflow = 'auto';
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && modal.style.display === 'block') {
+        modal.style.display = 'none';
+        toggleButton.setAttribute('aria-expanded', 'false');
+        toggleButton.focus();
+        document.body.style.overflow = 'auto';
+      }
+    });
+  }
+
+  // Initial render
   renderLanguageChart();
 }

@@ -86,7 +86,16 @@
         </h2>
         <div class="language-container">
           <canvas id="languageChart" class="chart" aria-label="Pie chart of programming languages"></canvas>
-          <div class="language-legend js-language-legend"></div>
+          <button class="language-key-toggle js-language-key-toggle" aria-expanded="false" aria-controls="language-key-modal">
+            View Language Key
+          </button>
+          <div class="language-key-modal js-language-key-modal" id="language-key-modal" role="dialog" aria-modal="true" style="display: none;">
+            <div class="language-key-content">
+              <h3 class="language-key-title">Language Breakdown</h3>
+              <div class="language-legend js-language-legend"></div>
+              <button class="language-key-close js-language-key-close" aria-label="Close language key modal">Close</button>
+            </div>
+          </div>
         </div>
       </section>
     </section>
