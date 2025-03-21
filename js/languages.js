@@ -19,12 +19,12 @@ export function initializeLanguages() {
       const data = languages.map(item => item.percentage);
       const backgroundColors = languages.map((item, index) => {
         const colors = [
-          'rgba(231, 61, 4, 0.6)', // HTMLColor (orange)
-          'rgba(66, 0, 181, 0.6)', // CSSColor (purple)
-          'rgba(229, 191, 0, 0.6)', // JSColor (yellow)
-          'rgba(48, 169, 255, 0.6)', //BicepColor (Azure Blue)
-          'rgba(20, 70, 103, 0.6)', // PowerShellColor (blue, new color)
-          'rgba(55, 120, 191, 0.6)' // PythonColor (blue)
+          'rgba(227, 93, 25, 0.6)',  // --HTMLColor (red)
+          'rgba(91, 0, 181, 0.6)',  // --CSSColor (teal)
+          'rgba(255, 255, 1, 0.6)',  // --JSColor (yellow)
+          'rgba(48, 169, 255, 0.6)', // --BicepColor (Azure Blue)
+          'rgba(4, 0, 88, 0.6)', // --PowerShellColor (red)
+          'rgba(46, 79, 244, 0.6)' // --PythonColor (light orange)
         ];
         return colors[index % colors.length];
       });
@@ -52,13 +52,33 @@ export function initializeLanguages() {
             data: data,
             backgroundColor: backgroundColors,
             borderColor: borderColors,
-            borderWidth: 1
+            borderWidth: 1,
+            hoverOffset: 10 // Adds a slight "pop" effect on hover
           }]
         },
         options: {
+          animation: {
+            animateScale: true, // Scales the chart from the center
+            animateRotate: true // Rotates the chart into place
+          },
           plugins: {
             legend: {
               display: false // Custom legend
+            },
+            tooltip: {
+              enabled: true,
+              backgroundColor: 'rgba(51, 51, 51, 0.8)', // Match --TooltipBackground
+              titleColor: '#ffffff',
+              bodyColor: '#ffffff',
+              borderColor: 'rgba(233, 69, 96, 1)', // Match --AccentColor
+              borderWidth: 1,
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.raw || 0;
+                  return `${label}: ${value}%`;
+                }
+              }
             }
           }
         }
