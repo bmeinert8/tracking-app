@@ -53,24 +53,24 @@ export function initializeLanguages() {
             backgroundColor: backgroundColors,
             borderColor: borderColors,
             borderWidth: 1,
-            hoverOffset: 10 // Adds a slight "pop" effect on hover
+            hoverOffset: 10
           }]
         },
         options: {
           animation: {
-            animateScale: true, // Scales the chart from the center
-            animateRotate: true // Rotates the chart into place
+            animateScale: true,
+            animateRotate: true
           },
           plugins: {
             legend: {
-              display: false // Custom legend
+              display: false
             },
             tooltip: {
               enabled: true,
-              backgroundColor: 'rgba(51, 51, 51, 0.8)', // Match --TooltipBackground
+              backgroundColor: 'rgba(51, 51, 51, 0.8)',
               titleColor: '#ffffff',
               bodyColor: '#ffffff',
-              borderColor: 'rgba(233, 69, 96, 1)', // Match --AccentColor
+              borderColor: 'rgba(233, 69, 96, 1)',
               borderWidth: 1,
               callbacks: {
                 label: function(context) {
@@ -130,24 +130,24 @@ export function initializeLanguages() {
 
     // Open modal
     toggleButton.addEventListener('click', () => {
-      modal.style.display = 'block';
+      modal.classList.add('is-active');
       toggleButton.setAttribute('aria-expanded', 'true');
-      closeButton.focus(); // Focus on close button for accessibility
-      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+      closeButton.focus();
+      document.body.style.overflow = 'hidden';
     });
 
     // Close modal
     closeButton.addEventListener('click', () => {
-      modal.style.display = 'none';
+      modal.classList.remove('is-active'); // Remove class to hide modal
       toggleButton.setAttribute('aria-expanded', 'false');
-      toggleButton.focus(); // Return focus to toggle button
+      toggleButton.focus();
       document.body.style.overflow = 'auto';
     });
 
     // Close modal with Escape key
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && modal.style.display === 'block') {
-        modal.style.display = 'none';
+      if (event.key === 'Escape' && modal.classList.contains('is-active')) {
+        modal.classList.remove('is-active'); // Remove class to hide modal
         toggleButton.setAttribute('aria-expanded', 'false');
         toggleButton.focus();
         document.body.style.overflow = 'auto';

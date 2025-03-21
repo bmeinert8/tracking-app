@@ -386,35 +386,41 @@ header {
   outline-offset: 2px;
 }
 
-/* Language Key Modal */
 .language-key-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent backdrop */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.language-key-modal[style*="display: block"] {
+.language-key-modal.is-active {
   opacity: 1;
+  visibility: visible;
 }
 
 .language-key-content {
   background-color: var(--SecondaryBackground);
   padding: 1.5rem;
   border-radius: 10px;
-  max-width: 90%;
+  width: 90%;
+  max-width: 400px;
+  min-height: 300px;
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0px 4px 4px rgba(52, 52, 52, 0.25);
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .language-key-title {
