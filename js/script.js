@@ -1,5 +1,9 @@
 import { initializeCommits } from './commits.js';
 import { initializeCodeTime } from './codeTime.js';
+import { initializeLanguages } from './languages.js';
 
-initializeCommits();
-initializeCodeTime();
+document.addEventListener('DOMContentLoaded', () => {
+  initializeCommits();
+  initializeCodeTime();
+  initializeLanguages();
+});

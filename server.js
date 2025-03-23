@@ -157,4 +157,76 @@ app.get('/api/getLogs', async (req, res) => {
   }
 });
 
+// Endpoint to fetch language data
+app.get('/api/languages', async (req, res) => {
+  try {
+    // Fetch the list of repositories
+    const reposResponse = await fetch('https://api.github.com/users/bmeinert8/repos?per_page=100', {
+      headers: {
+        'Authorization': `token ${process.env.GITHUB_TOKEN}`,
+        'Accept-Encoding': 'identity'
+      }
+    });
+
+    if (!reposResponse.ok) {
+      throw new Error(`HTTP error fetching repos! Status: ${reposResponse.status}, Message: ${errorText}`);
+    }
+
+    const repos = await reposResponse.json();
+    console.log('Server: Repositories for languages:', repos.map(repo => repo.name));
+
+    //Fetch languages for each repository
+    const languagePromises = repos.map(repo => 
+      fetch (`https://api.github.com/repos/bmeinert8/${repo.name}/languages`, {
+        headers: {
+          'Authorization': `token ${process.env.GITHUB_TOKEN}`,
+          'Accept-Encoding': 'identity'
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          console.error(`Server: Failed to fetch languages for ${repo.name}: Status ${response.status}`);
+          return {};
+        }
+        return response.json();
+      })
+      .catch(error => {
+        console.error(`Server: Error fetching languages for ${repo.name}:`, error);
+        return {};
+      })
+    );
+
+    const languagesData = await Promise.all(languagePromises);
+
+    // Aggregate language data
+    const languageTotals = {};
+    languagesData.forEach(languages => {
+      for (const [language, bytes] of Object.entries(languages)) {
+        languageTotals[language] = (languageTotals[language] || 0) + bytes;
+      }
+    });
+
+    //Calculate total bytes and percentages
+    const totalBytes = Object.values(languageTotals).reduce((sum, bytes) => sum + bytes, 0);
+    const languagePercentages = {};
+    for (const [language, bytes] of Object.entries(languageTotals)) {
+      languagePercentages[language] = (bytes / totalBytes) * 100;
+    }
+
+    // Convert to array of objects for easier rendering
+    const languageArray = Object.entries(languagePercentages).map(([language, percentage]) => ({
+      language,
+      percentage: parseFloat(percentage.toFixed(2)) //round to 2 decimal places
+    }));
+
+    // Sort by percentage (descending)
+    languageArray.sort((a, b) => b.percentage - a.percentage);
+
+    res.json(languageArray);
+  } catch (error) {
+    console.error('Server: Error fetching languages:', error);
+    res.status(500).json({ error: 'Failed to fetch languages' });
+  }
+});
+
 app.listen(3000, () => console.log('Server is running on port 3000'));

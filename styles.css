@@ -172,7 +172,7 @@ header {
   border-radius: 10px;
   box-shadow: 0px 4px 4px rgba(52, 52, 52, 0.25);
   padding: 20px;
-  margin: 15px 0
+  margin: 20px 0; /* Increased from 15px to prevent overlap */
 }
 
 .title-link {
@@ -338,54 +338,149 @@ header {
   text-align: center;
 }
 
-/* Language Section */
+/* LANGUAGE SECTION */
+
 .language-section {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem; /* Reduced from 1.5rem */
   align-items: center;
   justify-content: center;
-  padding: 0 10px; /* Adds 10px padding to the left and right */
-}
-.pie-chart {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  overflow: hidden;
+  padding: 10px; /* Reduced from 0 10px to balance spacing */
+  height: 380px !important; /* Increased to fit content */
 }
 
-.slice {
-  position: absolute;
+.language-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem; /* Reduced from 1rem */
+  width: 100%;
+  max-width: 300px;
+}
+
+.language-chart {
+  height: 220px !important;
+  width: 220px !important;
+  margin-bottom: 1rem;
+}
+
+/* Language Key Toggle Button */
+.language-key-toggle {
+  background-color: transparent;
+  border: 1px solid var(--AccentColor);
+  color: var(--TextPrimary);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.language-key-toggle:hover {
+  background-color: rgba(233, 69, 96, 0.1); /* Subtle hover effect with --AccentColor */
+}
+
+.language-key-toggle:focus {
+  outline: 2px solid var(--AccentColor);
+  outline-offset: 2px;
+}
+
+.language-key-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  clip-path: polygon(50% 50%, 100% 0, 100% 100%);
-  transform-origin: 50% 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.slice-1 {
-  background-color: var(--JSColor);
-  transform: rotate(0deg) rotate(72deg);
+.language-key-modal.is-active {
+  opacity: 1;
+  visibility: visible;
 }
 
-.slice-2 {
-  background-color: var(--PythonColor);
-  transform: rotate(72deg) rotate(72deg);
+.language-key-content {
+  background-color: var(--SecondaryBackground);
+  padding: 1.5rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  min-height: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0px 4px 4px rgba(52, 52, 52, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.slice-3 {
-  background-color: var(--HTMLColor);
-  transform: rotate(144deg) rotate(72deg);
+.language-key-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--TextPrimary);
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
-.slice-4 {
-  background-color: var(--CSSColor);
-  transform: rotate(216deg) rotate(72deg);
+.language-key-close {
+  background-color: transparent;
+  border: 1px solid var(--AccentColor);
+  color: var(--TextPrimary);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 1rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.2s ease;
 }
 
-.slice-5 {
-  background-color: var(--BicepColor);
-  transform: rotate(288deg) rotate(72deg);
+.language-key-close:hover {
+  background-color: var(--AccentColor);
+}
+
+.language-key-close:focus {
+  outline: 2px solid var(--AccentColor);
+  outline-offset: 2px;
+}
+
+/* Legend Styling (adjust for modal) */
+.language-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.legend-label {
+  font-size: 14px;
+  color: var(--TextPrimary);
 }
 
 /* Footer */

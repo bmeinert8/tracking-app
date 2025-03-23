@@ -84,12 +84,18 @@
         <h2 class="text-preset-2">
           <a href="#" class="title-link" aria-label="View in-depth code languages page">Languages</a>
         </h2>
-        <div class="pie-chart">
-          <div class="slice slice-1"></div>
-          <div class="slice slice-2"></div>
-          <div class="slice slice-3"></div>
-          <div class="slice slice-4"></div>
-          <div class="slice slice-5"></div>
+        <div class="language-container">
+          <canvas id="languageChart" class="language-chart" aria-label="Pie chart of programming languages"></canvas>
+          <button class="language-key-toggle js-language-key-toggle" aria-expanded="false" aria-controls="language-key-modal">
+            View Language Key
+          </button>
+          <div class="language-key-modal js-language-key-modal" id="language-key-modal" role="dialog" aria-modal="true">
+            <div class="language-key-content">
+              <h3 class="language-key-title">Language Breakdown</h3>
+              <div class="language-legend js-language-legend"></div>
+              <button class="language-key-close js-language-key-close" aria-label="Close language key modal">Close</button>
+            </div>
+          </div>
         </div>
       </section>
     </section>
