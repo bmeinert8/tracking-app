@@ -6,7 +6,7 @@
 - **Decision**: Kept the current token since no exposure was detected.
 - **Next Steps**:
   - Reminder to rotate the token before public deployment on Azure.
-  - Ensure '.env' remains in '.gitignore'.
+  - Ensure `.env` remains in `.gitignore`.
 
 - **Date**: March 23, 2025
 - **Issue**: Live Server (port 5500) is accessible over the network (e.g., 'http://192.168.1.100:5500') despiste setting 'liveServer.settings.host' to '127.0.0.1' and using a 'live-server.json' config file.
@@ -18,3 +18,14 @@
 - **Decision**: Moved on to the next security step (XSS prevention) since the risk is minimal in this context
 - **Next Steps**:
   - Revisit securing Live Server in early May 2025, before deploying to Azure, or if using a less trusted network (e.g., public Wi- Fi).
+
+- **Date**: March 24, 2025
+- **Action**: Added `escapeHTML` function in `utils.js` to sanitize data before rendering to the DOM.
+- **Implementation**:
+  - Applied `escapeHTML` to language names and percentages in `languages.js` (modal legend).
+  - Reviewed `codeTime.js` and `commits.js` -no sanitization needed as no user-controlled data is rendered.
+- **Testing**:
+  - Tested with mock data containing `<script>alert('hacked')</script>` and `<b>HTML</b>`.
+  - Confirmed that data renders as plain text, with no script execution or HTML rendering.
+- **Next Steps**:
+  - Apply sanitization to commit messages if added to the UI (e.g., in the commits page).
