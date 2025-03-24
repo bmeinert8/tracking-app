@@ -29,3 +29,15 @@
   - Confirmed that data renders as plain text, with no script execution or HTML rendering.
 - **Next Steps**:
   - Apply sanitization to commit messages if added to the UI (e.g., in the commits page).
+
+- **Date**: March 23, 2025
+- **Actions**: Ran `npm audit` to identify vulnerabilites in dependencies.
+- **Findings**: No vulnerabilities found.
+- **Updates**:
+  - Updated `express` to 4.21.2.
+  - Updated `node-fetch` to 2.7.0.
+  - Updated `cors` to 2.8.5.
+  - Updated `dotenv` to 16.4.7.
+  - Updated `chart.js` via CDN
+- **Testing**:
+  - Confirmed that the app works as expected after updates.
