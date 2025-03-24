@@ -1,3 +1,5 @@
+import { escapeHTML } from "./utils.js";
+
 console.log('Languages module loaded');
 
 export function initializeLanguages() {
@@ -109,9 +111,11 @@ export function initializeLanguages() {
     languages.forEach((item, index) => {
       const legendItem = document.createElement('div');
       legendItem.classList.add('legend-item');
+      const sanitizedLanguage = escapeHTML(item.language);
+      const sanitizedPercentage = escapeHTML(item.percentage.toString());
       legendItem.innerHTML = `
         <span class="legend-color" style="background-color: ${colors[index]};"></span>
-        <span class="legend-label">${item.language}: ${item.percentage}%</span>
+        <span class="legend-label">${sanitizedLanguage}: ${sanitizedPercentage}%</span>
       `;
       legendContainer.appendChild(legendItem);
     });
