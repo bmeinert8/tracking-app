@@ -42,7 +42,7 @@ app.get('/api/commits', async (req, res) => {
     console.log('Server: Repositories:', repos.map(repo => repo.name));
 
     const repoPromises = repos.map(repo =>
-      fetch(`https://api.github.com/repos/bmeinert8/${repo.name}/branches`, {
+      fetch(`https://api.github.com/repos/bmeinert8/${repo.name}/commits?sha=${repo.default_branch}&since=2024-03-12&per_page=100`, {
         headers: {
           'Authorization': `token ${process.env.GITHUB_TOKEN}`,
           'Accept-Encoding': 'identity'
@@ -50,40 +50,19 @@ app.get('/api/commits', async (req, res) => {
       })
       .then(response => {
         if (!response.ok) {
-          console.error(`Server: Failed to fetch branches for ${repo.name}: Status ${response.status}`);
+          console.error(`Server: Failed to fetch commits for ${repo.name}/${repo.default_branch}: Status ${response.status}`);
           return [];
         }
         return response.json();
       })
       .catch(error => {
-        console.error(`Server: Error fetching branches for ${repo.name}:`, error);
+        console.error(`Server: Error fetching commits for ${repo.name}/${repo.default_branch}:`, error);
         return [];
       })
-      .then(branches => {
-        const branchPromises = branches.map(branch =>
-          fetch(`https://api.github.com/repos/bmeinert8/${repo.name}/commits?sha=${branch.name}&since=2024-03-12&per_page=100`, {
-            headers: {
-              'Authorization': `token ${process.env.GITHUB_TOKEN}`,
-              'Accept-Encoding': 'identity'
-            }
-          })
-          .then(response => {
-            if (!response.ok) {
-              console.error(`Server: Failed to fetch commits for ${repo.name}/${branch.name}: Status ${response.status}`);
-              return [];
-            }
-            return response.json();
-          })
-          .catch(error => {
-            console.error(`Server: Error fetching commits for ${repo.name}/${branch.name}:`, error);
-            return [];
-          })
-        );
-        return Promise.all(branchPromises).then(branchCommits => ({
-          repo: repo.name,
-          commits: [].concat(...branchCommits)
-        }));
-      })
+      .then(commits => ({
+        repo: repo.name,
+        commits
+      }))
     );
 
     const repoCommits = await Promise.all(repoPromises);
