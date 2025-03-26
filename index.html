@@ -55,7 +55,14 @@
           <div class="commit-cell more"></div>
           <div class="commit-cell most"></div>
           <p class="key-text">most</p>
+          <button class="info-button js-info-button" aria-expanded="false" aria-controls="commit-info-modal">i</button>
         </section>
+        <div class="commit-info-modal js-commit-info-modal" id="commit-info-modal" role="dialog" aria-modal="true">
+          <div class="commit-info-content">
+            <p class="commit-info-text">The commit grid shows activity on the default branch only. Commits on other branches will appear after merging.</p>
+            <button class="commit-info-close js-commit-info-close" aria-label="Close commit info modal">Close</button>
+          </div>
+        </div>
       </section>
       <section class="time-section">
         <h2 class="text-preset-2">

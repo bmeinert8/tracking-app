@@ -254,6 +254,80 @@ header {
   align-items: center;
 }
 
+.info-button {
+  border: 1px solid var(--AccentColor);
+  color: var(--TextPrimary);
+  background-color: var(--SecondaryBackground);
+  padding: 3px 8px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.info-button:hover{
+  cursor: pointer;
+  background-color: var(--AccentColor);
+}
+
+.commit-info-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 300px;
+  background-color: var(--SecondaryBackground);
+  border: 2px solid var(--AccentColor);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.commit-info-modal.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.commit-info-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.commit-info-text {
+  font-size: 14px;
+  color: var(--TextPrimary);
+  text-align: center;
+}
+
+.commit-info-close {
+  background-color: transparent;
+  border: 1px solid var(--AccentColor);
+  color: var(--TextPrimary);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.commit-info-close:hover {
+  background-color: var(--AccentColor);
+}
+
+.commit-info-close:focus {
+  outline: 2px solid var(--AccentColor);
+  outline-offset: 2px;
+}
+
 /* Code Time Section */
 .time-section {
   display: flex;
@@ -377,7 +451,7 @@ header {
 }
 
 .language-key-toggle:hover {
-  background-color: rgba(233, 69, 96, 0.1); /* Subtle hover effect with --AccentColor */
+  background-color: var(--AccentColor); /* Subtle hover effect with --AccentColor */
 }
 
 .language-key-toggle:focus {

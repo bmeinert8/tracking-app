@@ -8,6 +8,42 @@ export function initializeCommits() {
     })
     .then(allCommits => processCommits(allCommits))
     .catch(error => console.error('Error fetching commits:', error));
+  
+  initializeInfoButton();
+}
+
+function initializeInfoButton() {
+  const infoButton = document.querySelector('.js-info-button');
+  const modal = document.querySelector('.js-commit-info-modal');
+  const closeButton = document.querySelector('.js-commit-info-close');
+
+  if (!infoButton || !modal || !closeButton) {
+    console.error('Info button, modal, or close button not found');
+    return;
+  }
+
+  // Open modal on info button click
+  infoButton.addEventListener('click', () => {
+    modal.classList.add('is-active');
+    infoButton.setAttribute('aria-expanded', 'true');
+    closeButton.focus(); // Move focus to the close button for accessibility
+  });
+
+  // Close modal on close button click
+  closeButton.addEventListener('click', () => {
+    modal.classList.remove('is-active');
+    infoButton.setAttribute('aria-expanded', 'false');
+    infoButton.focus(); // Return focus to the info button
+  });
+
+  // Close modal on Escape key press
+  modal.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      modal.classList.remove('is-active');
+      infoButton.setAttribute('aria-expanded', 'false');
+      infoButton.focus();
+    }
+  });
 }
 
 function processCommits(allCommits) {
