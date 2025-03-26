@@ -8,7 +8,7 @@ export function initializeCommits() {
     })
     .then(allCommits => processCommits(allCommits))
     .catch(error => console.error('Error fetching commits:', error));
-  
+
   initializeInfoButton();
 }
 
@@ -79,18 +79,22 @@ function displayTotalCommits(commitCounts) {
 
 function buildCommitGrid(today, commitCounts) {
   const commitGrid = document.querySelector('.js-commit-grid');
+  const fragment = document.createDocumentFragment(); // Create a DocumentFragment
+
   for (let i = 0; i < 365; i++) {
     const cell = document.createElement('div');
     cell.classList.add('commit-cell');
     const cellDate = new Date(today);
     cellDate.setDate(today.getDate() - i);
     cell.dataset.date = cellDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
-    commitGrid.appendChild(cell);
+    fragment.appendChild(cell); // Append to fragment instead of DOM
   }
 
-  // calculate dynamic threshold
-  const commitCountsArray = []
-  for (let i = 0; i < 365; i ++) {
+  commitGrid.appendChild(fragment); // Append fragment to DOM in one operation
+
+  // Calculate dynamic threshold
+  const commitCountsArray = [];
+  for (let i = 0; i < 365; i++) {
     const cellDate = new Date(today);
     cellDate.setDate(today.getDate() - i);
     const dateStr = cellDate.toLocaleDateString('en-CA', { timeZone: 'America/New_York' });

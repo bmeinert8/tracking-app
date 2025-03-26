@@ -4,9 +4,13 @@ const path = require('path');
 const cors = require('cors');
 const fetch = require('node-fetch');
 const fs = require('fs').promises;
-const rateLimit = require('express-rate-limit'); // Import express-rate-limit
+const rateLimit = require('express-rate-limit');
+const NodeCache = require('node-cache'); // Import node-cache
 
 const app = express();
+
+// Initialize cache with a TTL of 10 minutes (600 seconds)
+const cache = new NodeCache({ stdTTL: 600 });
 
 // Enable CORS to allow requests from your frontend (e.g., Live Server on port 5500)
 app.use(cors());
@@ -46,12 +50,19 @@ const saveLogLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per window
   message: 'Too many requests from this IP, please try again after 15 minutes.',
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+  standardHeaders: true,
+  legacyHeaders: false
 });
 
 // Endpoint to fetch commits
 app.get('/api/commits', async (req, res) => {
+  const cacheKey = 'commits';
+  const cachedCommits = cache.get(cacheKey);
+  if (cachedCommits) {
+    console.log('Server: Serving commits from cache');
+    return res.json(cachedCommits);
+  }
+
   try {
     const reposResponse = await fetch('https://api.github.com/users/bmeinert8/repos?per_page=100', {
       headers: {
@@ -94,6 +105,9 @@ app.get('/api/commits', async (req, res) => {
     const repoCommits = await Promise.all(repoPromises);
     const allCommits = [].concat(...repoCommits.map(repo => repo.commits));
 
+    // Cache the commits
+    cache.set(cacheKey, allCommits);
+    console.log('Server: Cached commits');
     res.json(allCommits);
   } catch (error) {
     console.error('Server: Error fetching commits:', error);
