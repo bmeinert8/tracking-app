@@ -24,6 +24,22 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Function to validate an ISO 8601 timestamp
+function isValidTimestamp(ts) {
+  return typeof ts === 'string' && ts.length <= 50 && !isNaN(Date.parse(ts));
+}
+
+// Function to sanitize a string (escape HTML characters)
+function sanitizeString(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // Endpoint to fetch commits
 app.get('/api/commits', async (req, res) => {
   try {
@@ -96,9 +112,12 @@ app.post('/api/saveLog', async (req, res) => {
     const minutesNum = parseInt(minutes, 10) || 0;
     const secondsNum = parseInt(seconds, 10) || 0;
 
+    // Validate and sanitize timestamp
+    const validatedTimestamp = isValidTimestamp(timestamp) ? sanitizeString(timestamp) : new Date().toISOString();
+
     // Append new log
     logsData.logs.push({
-      timestamp: timestamp || new Date().toISOString(),
+      timestamp: validatedTimestamp,
       hours: hoursNum,
       minutes: minutesNum,
       seconds: secondsNum
@@ -148,15 +167,15 @@ app.get('/api/languages', async (req, res) => {
     });
 
     if (!reposResponse.ok) {
-      throw new Error(`HTTP error fetching repos! Status: ${reposResponse.status}, Message: ${errorText}`);
+      throw new Error(`HTTP error fetching repos! Status: ${reposResponse.status}`);
     }
 
     const repos = await reposResponse.json();
     console.log('Server: Repositories for languages:', repos.map(repo => repo.name));
 
-    //Fetch languages for each repository
+    // Fetch languages for each repository
     const languagePromises = repos.map(repo => 
-      fetch (`https://api.github.com/repos/bmeinert8/${repo.name}/languages`, {
+      fetch(`https://api.github.com/repos/bmeinert8/${repo.name}/languages`, {
         headers: {
           'Authorization': `token ${process.env.GITHUB_TOKEN}`,
           'Accept-Encoding': 'identity'
@@ -185,7 +204,7 @@ app.get('/api/languages', async (req, res) => {
       }
     });
 
-    //Calculate total bytes and percentages
+    // Calculate total bytes and percentages
     const totalBytes = Object.values(languageTotals).reduce((sum, bytes) => sum + bytes, 0);
     const languagePercentages = {};
     for (const [language, bytes] of Object.entries(languageTotals)) {
@@ -195,7 +214,7 @@ app.get('/api/languages', async (req, res) => {
     // Convert to array of objects for easier rendering
     const languageArray = Object.entries(languagePercentages).map(([language, percentage]) => ({
       language,
-      percentage: parseFloat(percentage.toFixed(2)) //round to 2 decimal places
+      percentage: parseFloat(percentage.toFixed(2)) // round to 2 decimal places
     }));
 
     // Sort by percentage (descending)
