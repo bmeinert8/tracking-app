@@ -6,6 +6,46 @@ export function initializeLanguages() {
   // Placeholder for chart instance
   let chartInstance = null;
 
+  // Mapping of known languages to colors (based on CSS variables)
+  const languageColorMap = {
+    'HTML': 'rgba(227, 93, 25, 0.6)',    // --HTMLColor (red)
+    'CSS': 'rgba(91, 0, 181, 0.6)',      // --CSSColor (teal)
+    'JavaScript': 'rgba(255, 255, 1, 0.6)', // --JSColor (yellow)
+    'Bicep': 'rgba(48, 169, 255, 0.6)',  // --BicepColor (Azure Blue)
+    'PowerShell': 'rgba(4, 0, 88, 0.6)',  // --PowerShellColor (dark blue)
+    'Python': 'rgba(46, 79, 244, 0.6)'   // --PythonColor (light blue)
+  };
+
+  // Load persisted colors for new languages from localStorage
+  const persistedColors = JSON.parse(localStorage.getItem('languageColors') || '{}');
+
+  // Function to generate a new color using HSL
+  function generateColor(index) {
+    // Use HSL to generate a distinct color by varying the hue
+    const hue = (index * 137.5) % 360; // Golden angle approximation for even distribution
+    return `hsla(${hue}, 70%, 60%, 0.6)`; // 70% saturation, 60% lightness, 0.6 opacity
+  }
+
+  // Function to get or assign a color for a language
+  function getLanguageColor(language, index) {
+    // Check if the language has a predefined color
+    if (languageColorMap[language]) {
+      return languageColorMap[language];
+    }
+
+    // Check if the language has a persisted color
+    if (persistedColors[language]) {
+      return persistedColors[language];
+    }
+
+    // Generate a new color for the language
+    const newColor = generateColor(Object.keys(persistedColors).length + index);
+    persistedColors[language] = newColor;
+    // Save the updated persisted colors to localStorage
+    localStorage.setItem('languageColors', JSON.stringify(persistedColors));
+    return newColor;
+  }
+
   // Function to fetch and render the language chart
   async function renderLanguageChart() {
     try {
@@ -19,18 +59,20 @@ export function initializeLanguages() {
       // Prepare data for the pie chart
       const labels = languages.map(item => item.language);
       const data = languages.map(item => item.percentage);
+
+      // Assign colors to languages
       const backgroundColors = languages.map((item, index) => {
-        const colors = [
-          'rgba(227, 93, 25, 0.6)',  // --HTMLColor (red)
-          'rgba(91, 0, 181, 0.6)',  // --CSSColor (teal)
-          'rgba(255, 255, 1, 0.6)',  // --JSColor (yellow)
-          'rgba(48, 169, 255, 0.6)', // --BicepColor (Azure Blue)
-          'rgba(4, 0, 88, 0.6)', // --PowerShellColor (red)
-          'rgba(46, 79, 244, 0.6)' // --PythonColor (light orange)
-        ];
-        return colors[index % colors.length];
+        const color = getLanguageColor(item.language, index);
+        return color;
       });
-      const borderColors = backgroundColors.map(color => color.replace('0.6', '1'));
+      const borderColors = backgroundColors.map(color => {
+        if (color.startsWith('rgba')) {
+          return color.replace('0.6', '1');
+        } else if (color.startsWith('hsla')) {
+          return color.replace('0.6', '1');
+        }
+        return color;
+      });
 
       const canvas = document.getElementById('languageChart');
       if (!canvas) {

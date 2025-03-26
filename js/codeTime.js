@@ -108,12 +108,40 @@ export function initializeCodeTime() {
       // Show error message
       const errorElement = document.querySelector('.js-save-error');
       if (errorElement) {
+        // Check if the error is due to rate limiting (429)
+        if (error.message.includes('429')) {
+          errorElement.textContent = 'Too many requests. Please try again later.';
+        } else {
+          errorElement.textContent = 'Error saving log. Please try again.';
+        }
         errorElement.style.display = 'block';
         setTimeout(() => {
           errorElement.style.display = 'none';
+          errorElement.textContent = 'Error saving log. Please try again.'; // Reset to default message
         }, 3000); // Hide after 3 seconds
       }
     }
+  }
+
+  // Function to convert seconds to hours and minutes with rounding
+  function secondsToHoursMinutes(totalSeconds) {
+    // Apply rounding based on seconds
+    let seconds = totalSeconds % 60;
+    let minutes = Math.floor(totalSeconds / 60);
+    if (seconds >= 30) {
+      minutes += 1; // Round up
+    }
+    const hours = Math.floor(minutes / 60);
+    minutes = minutes % 60;
+    return { hours, minutes };
+  }
+
+  // Function to format time as H:MM
+  function formatTime(hours, minutes) {
+    // Omit leading zero for single-digit hours
+    const hoursStr = hours < 10 ? hours : String(hours).padStart(2, '0');
+    const minutesStr = String(minutes).padStart(2, '0');
+    return `${hoursStr}:${minutesStr}`;
   }
 
   // Function to render chart
@@ -157,19 +185,23 @@ export function initializeCodeTime() {
       labels.reverse();
   
       const fullLabels = Object.keys(dailyTotals);
-      const data = labels.map(label => {
+      const dataInSeconds = labels.map(label => {
         const fullDate = `${todayEST.getFullYear()}-${String(label.split('/')[0]).padStart(2, '0')}-${String(label.split('/')[1]).padStart(2, '0')}`;
-        return (dailyTotals[fullDate] || 0) / 3600;
+        return dailyTotals[fullDate] || 0;
       });
-      console.log('Chart data (hours):', data);
+
+      // Convert data to hours and minutes for display, but keep raw hours for chart scaling
+      const dataInHoursMinutes = dataInSeconds.map(seconds => secondsToHoursMinutes(seconds));
+      const dataInHours = dataInSeconds.map(seconds => seconds / 3600); // For chart scaling
+      console.log('Chart data (hours and minutes):', dataInHoursMinutes);
+      console.log('Chart data (hours for scaling):', dataInHours);
   
       // Calculate the total code time
-      const totalHours = data.reduce((sum, hours) => sum + hours, 0);
-      const totalSeconds = totalHours * 3600;
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = Math.floor(totalSeconds % 60);
-      const totalTimeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      const totalSeconds = dataInSeconds.reduce((sum, seconds) => sum + seconds, 0);
+      const totalHours = Math.floor(totalSeconds / 3600);
+      const totalMinutes = Math.floor((totalSeconds % 3600) / 60);
+      const totalSecondsRemaining = Math.floor(totalSeconds % 60);
+      const totalTimeString = `${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}:${String(totalSecondsRemaining).padStart(2, '0')}`;
       console.log('Total time string:', totalTimeString);
   
       // Display the total
@@ -180,10 +212,14 @@ export function initializeCodeTime() {
         console.error('Total code time element not found');
       }
   
-      // ... (rest of the chart rendering code remains unchanged)
-      const maxHours = Math.max(...data, 0.001);
-      const roundedMax = Math.ceil(maxHours * 1000) / 1000;
-      const midPoint = roundedMax / 2;
+      // Calculate max hours for scaling the y-axis
+      const maxHours = Math.max(...dataInHours, 0.001);
+      const roundedMaxHours = Math.ceil(maxHours); // Round up to the nearest hour
+      const midPointHours = roundedMaxHours / 2;
+
+      // Convert max and midpoint to hours and minutes for display
+      const maxTime = secondsToHoursMinutes(roundedMaxHours * 3600);
+      const midTime = secondsToHoursMinutes(midPointHours * 3600);
   
       const ctx = document.getElementById('codeTimeChart').getContext('2d');
   
@@ -199,8 +235,8 @@ export function initializeCodeTime() {
         data: {
           labels: labels,
           datasets: [{
-            label: 'Coding Time (Hours)',
-            data: data,
+            label: 'Coding Time',
+            data: dataInHours, // Use raw hours for chart scaling
             backgroundColor: 'rgba(58, 155, 176, 0.6)',
             borderColor: 'rgba(58, 155, 176, 1)',
             borderWidth: 1,
@@ -212,16 +248,19 @@ export function initializeCodeTime() {
           scales: {
             y: {
               beginAtZero: true,
-              max: roundedMax,
+              max: roundedMaxHours,
               title: {
                 display: false
               },
               ticks: {
-                callback: value => value.toFixed(3),
+                callback: function(value) {
+                  const { hours, minutes } = secondsToHoursMinutes(value * 3600);
+                  return formatTime(hours, minutes);
+                },
                 color: '#ffffff',
                 font: { size: 10 },
-                stepSize: midPoint,
-                values: [0, midPoint, roundedMax]
+                stepSize: midPointHours,
+                values: [0, midPointHours, roundedMaxHours]
               }
             },
             x: {
@@ -243,6 +282,15 @@ export function initializeCodeTime() {
             },
             title: {
               display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const index = context.dataIndex;
+                  const { hours, minutes } = dataInHoursMinutes[index];
+                  return `Coding Time: ${formatTime(hours, minutes)}`;
+                }
+              }
             }
           }
         }
