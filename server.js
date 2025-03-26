@@ -4,6 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const fetch = require('node-fetch');
 const fs = require('fs').promises;
+const rateLimit = require('express-rate-limit'); // Import express-rate-limit
 
 const app = express();
 
@@ -33,12 +34,21 @@ function isValidTimestamp(ts) {
 function sanitizeString(str) {
   if (typeof str !== 'string') return str;
   return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/&/g, '&')
+    .replace(/</g, '<')
+    .replace(/>/g, '>')
+    .replace(/"/g, '"')
+    .replace(/'/g, ''');
 }
+
+// Configure rate limiting for /api/saveLog
+const saveLogLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per window
+  message: 'Too many requests from this IP, please try again after 15 minutes.',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
+});
 
 // Endpoint to fetch commits
 app.get('/api/commits', async (req, res) => {
@@ -92,7 +102,7 @@ app.get('/api/commits', async (req, res) => {
 });
 
 // Endpoint to save a log (changed to POST)
-app.post('/api/saveLog', async (req, res) => {
+app.post('/api/saveLog', saveLogLimiter, async (req, res) => {
   try {
     const userId = 'bmeinert8'; // Hardcoded for now; replace with auth later
     const { timestamp, hours, minutes, seconds } = req.body; // Extract from request body

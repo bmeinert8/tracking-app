@@ -108,9 +108,16 @@ export function initializeCodeTime() {
       // Show error message
       const errorElement = document.querySelector('.js-save-error');
       if (errorElement) {
+        // Check if the error is due to rate limiting (429)
+        if (error.message.includes('429')) {
+          errorElement.textContent = 'Too many requests. Please try again later.';
+        } else {
+          errorElement.textContent = 'Error saving log. Please try again.';
+        }
         errorElement.style.display = 'block';
         setTimeout(() => {
           errorElement.style.display = 'none';
+          errorElement.textContent = 'Error saving log. Please try again.'; // Reset to default message
         }, 3000); // Hide after 3 seconds
       }
     }
