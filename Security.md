@@ -41,3 +41,31 @@
   - Updated `chart.js` via CDN
 - **Testing**:
   - Confirmed that the app works as expected after updates.
+
+- **Date**: March 26, 2025
+- **Action**: Timestamp Validation and Sanitization in `/api/saveLog`
+- **Change**:
+  - Added `isValidTimestamp()` function to validate that the `timestamp` in `/api/saveLog` requests is a valid ISO 8601 string and is under 50 characters.
+  - Added `sanitizeString()` function to escape HTML characters in the `timestamp`, preventing potential XSS if the data is rendered in the DOM later.
+  - If the `timestamp` is invalid, a new server-generated timestamp is used.
+- **Files Modified**:
+  - `server.js`
+- **Impact**:
+  - Prevents malformed or malicious timestamps from corrupting `codeTimeLogs.json` or causing issues on the frontend.
+  - Adds a defense-in-depth layer by escaping HTML characters.
+
+- **Date**: March 26, 2025
+- **Action**: 2. Rate Limiting for `/api/saveLog`
+- **Change**:
+  - Added rate limiting to the `/api/saveLog` endpoint using `express-rate-limit`.
+  - Configured to allow 100 requests per IP every 15 minutes.
+  - Returns a 429 (Too Many Requests) status with a message if the limit is exceeded.
+  - Updated `codeTime.js` to display a specific error message ("Too many requests. Please try again later.") for 429 errors.
+- **Files Modified**:
+  - `server.js`
+  - `codeTime.js`
+- **Impact**:
+  - Protects the server from abuse (e.g., DoS attacks or excessive requests) that could fill up the disk or overload the server with file I/O.
+  - Improves user experience by providing a clear error message when the rate limit is hit.
+- **Dependencies Added**:
+  - `express-rate-limit`
