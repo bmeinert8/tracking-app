@@ -42,7 +42,7 @@ function sanitizeString(str) {
     .replace(/</g, '<')
     .replace(/>/g, '>')
     .replace(/"/g, '"')
-    .replace(/'/g, ''');
+    .replace(/'/g, "'");
 }
 
 // Configure rate limiting for /api/saveLog
